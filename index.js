@@ -4,7 +4,7 @@ dotenv.config();
 const errorHandlerMiddleware = require('./middlewares/errorHandlerMiddleware');
 const iecController = require('./controllers/iec.controller');
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT ;
 const app = express();
 
 // Middlewares
@@ -53,7 +53,9 @@ app.use((req, res, next) => {
 // Error handler middleware 
 app.use(errorHandlerMiddleware);
 
-app.listen(PORT, () => {
-    console.log(`App is running on server http://localhost:${PORT}`);
-});
+
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`App is listening at port : ${PORT}`);
+})
+
 
