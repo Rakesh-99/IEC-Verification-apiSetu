@@ -18,8 +18,8 @@ const verifyIECFromAPI = async (iecCode) => {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
-                'X-APISETU-APIKEY': process.env.APISETU_API_KEY || '',
-                'X-APISETU-CLIENTID': process.env.APISETU_CLIENT_ID || ''
+                'api_key': process.env.APISETU_API_KEY || '',
+                'client_id': process.env.APISETU_CLIENT_ID || ''
             }
         });
 
