@@ -24,21 +24,22 @@ const verifyIECFromAPI = async (iecCode) => {
         });
 
         console.log('API Response Status:', response.status);
+        console.log('API Response Headers:', Object.fromEntries(response.headers.entries()));
         
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
             console.error('API Error Response:', errorData);
             throw new ErrorHandler(
                 response.status,
-                errorData.message || `Failed to verify IEC code from external API (Status: ${response.status})`
+                errorData.errorDescription || errorData.message || `Failed to verify IEC code from external API (Status: ${response.status})`
             );
         }
 
         const data = await response.json();
         console.log('API Success Response:', data);
         
-        // Check if IEC is valid based on API response
-        if (!data || data.status === 'INVALID' || !data.iec) {
+        // Check if IEC is valid based on API response (v3 structure)
+        if (!data || !data.iecNumber) {
             throw new ErrorHandler(404, 'Invalid IEC code. Please check and try again.');
         }
 
@@ -52,22 +53,22 @@ const verifyIECFromAPI = async (iecCode) => {
     }
 };
 
-// Parse and format company data from API response
+// Parse and format company data from API response (Version 3)
 const formatCompanyData = (apiResponse, iecCode) => {
     return {
         iec_code: iecCode,
-        company_name: apiResponse.firmName || apiResponse.companyName || 'N/A',
-        address: apiResponse.address || apiResponse.addressLine1 || 'N/A',
-        city: apiResponse.city || apiResponse.cityName || null,
-        state: apiResponse.state || apiResponse.stateName || null,
-        pincode: apiResponse.pincode || apiResponse.pin || null,
-        country: apiResponse.country || 'India',
-        email: apiResponse.email || null,
-        phone: apiResponse.phone || apiResponse.mobile || null,
-        status: apiResponse.status === 'ACTIVE' ? 'active' : 'inactive',
-        registration_date: apiResponse.registrationDate || null,
-        valid_from: apiResponse.validFrom || apiResponse.issueDate || null,
-        valid_to: apiResponse.validTo || apiResponse.expiryDate || null,
+        company_name: apiResponse.entityName || 'N/A',
+        address: `${apiResponse.address1 || ''} ${apiResponse.address2 || ''}`.trim() || 'N/A',
+        city: apiResponse.city || null,
+        state: apiResponse.state || null,
+        pincode: apiResponse.pinCode ? String(apiResponse.pinCode) : null,
+        country: 'India',
+        email: null, // V3 API doesn't provide email
+        phone: null, // V3 API doesn't provide phone directly
+        status: apiResponse.iecStatus === 0 ? 'active' : 'inactive',
+        registration_date: null,
+        valid_from: apiResponse.iecIssueDate || null,
+        valid_to: null,
         raw_api_response: apiResponse
     };
 };
