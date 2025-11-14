@@ -17,9 +17,9 @@ const verifyIECFromAPI = async (iecCode) => {
         const response = await fetch(apiUrl, {
             method: 'GET',
             headers: {
-                'Accept': 'application/json',
-                'api_key': process.env.APISETU_API_KEY || '',
-                'client_id': process.env.APISETU_CLIENT_ID || ''
+                'X-APISETU-CLIENTID': process.env.APISETU_CLIENT_ID,
+                'X-APISETU-APIKEY':process.env.APISETU_API_KEY,
+                'Content-Type': 'application/json',
             }
         });
 
