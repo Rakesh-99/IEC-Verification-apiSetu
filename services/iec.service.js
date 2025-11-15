@@ -3,6 +3,7 @@ const ErrorHandler = require('../utils/errorHandler');
 
 // Verify IEC code through API Setu
 const verifyIECFromAPI = async (iecCode) => {
+ 
     try {
         // APISetu IEC Verification API endpoint - Version 3
         const apiUrl = `https://apisetu.gov.in/dgft/v3/iec/${iecCode}`;
@@ -17,9 +18,9 @@ const verifyIECFromAPI = async (iecCode) => {
         const response = await fetch(apiUrl, {
             method: 'GET',
             headers: {
+                'Accept': 'application/json',
                 'X-APISETU-CLIENTID': process.env.APISETU_CLIENT_ID,
-                'X-APISETU-APIKEY':process.env.APISETU_API_KEY,
-                'Content-Type': 'application/json',
+                'X-APISETU-APIKEY': process.env.APISETU_API_KEY,
             }
         });
 
